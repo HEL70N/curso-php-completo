@@ -1,10 +1,10 @@
-<?php 
+<?php
 session_start();
 
-$email = $_POST['email'];
-$senha = $_POST['senha'];
+$email = filter_input(INPUT_POST, 'email');
+$senha = filter_input(INPUT_POST, 'senha');
 
-if($_POST['email']) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuarios = [
         [
             "nome" => "Aluno Cod3r",
@@ -18,11 +18,11 @@ if($_POST['email']) {
         ],
     ];
 
-    foreach($usuarios as $usuario) {
+    foreach ($usuarios as $usuario) {
         $emailValido = $email === $usuario['email'];
         $senhaValida = $senha === $usuario['senha'];
 
-        if($emailValido && $senhaValida) {
+        if ($emailValido && $senhaValida) {
             $_SESSION['erros'] = null;
             $_SESSION['usuario'] = $usuario['nome'];
             $exp = time() + 60 * 60 * 24 * 30;
@@ -31,7 +31,7 @@ if($_POST['email']) {
         }
     }
 
-    if(!$_SESSION['usuario']) {
+    if (!$_SESSION['usuario']) {
         $_SESSION['erros'] = ['Usuário/Senha inválido!'];
     }
 }
@@ -39,6 +39,7 @@ if($_POST['email']) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700" rel="stylesheet">
@@ -46,6 +47,7 @@ if($_POST['email']) {
     <link rel="stylesheet" href="recursos/css/login.css">
     <title>Curso PHP</title>
 </head>
+
 <body class="login">
     <header class="cabecalho">
         <h1>Curso PHP</h1>
@@ -54,9 +56,9 @@ if($_POST['email']) {
     <main class="principal">
         <div class="conteudo">
             <h3>Identifique-se</h3>
-            <?php if ($_SESSION['erros']): ?>
+            <?php if ($_SERVER['REQUEST_METHOD'] == 'POST') : ?>
                 <div class="erros">
-                    <?php foreach ($_SESSION['erros'] as $erro): ?>
+                    <?php foreach ($_SESSION['erros'] as $erro) : ?>
                         <p><?= $erro ?></p>
                     <?php endforeach ?>
                 </div>
@@ -78,4 +80,5 @@ if($_POST['email']) {
         COD3R & ALUNOS © <?= date('Y'); ?>
     </footer>
 </body>
+
 </html>
